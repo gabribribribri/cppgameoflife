@@ -1,12 +1,20 @@
 #include <array>
+#include <cstddef>
+#include <stdexcept>
 #include <thread>
 #include <iostream>
 using namespace std::chrono_literals;
 
 
 class GameOfLife {
+    /*
+        allocation size:
+            HEIGHT_Y * WIDTH_Y * 2 (bytes)
+        for h=30 and w=100 alloc size is 6ko (damn that's huge)
+    */
 
 public:
+    //some boring constant shit
     static constexpr size_t HEIGHT_Y                      = 30;
     static constexpr size_t WIDTH_X                       = 100;
     static constexpr int    POURCENT                      = 30;
@@ -41,13 +49,15 @@ public:
     }
 
     std::array<bool, WIDTH_X>& operator[](size_t index) {
-        
-    }
+        if (index > WIDTH_X or index < 0)
+            throw std::length_error("index > WIDTH_X");
+        else
+            return m_CurrentGrid->at(index);
+    } 
 
 private:
-    GridType* m_CurrentGrid;
-    GridType* m_NextGrid;
-
+    GridType* m_CurrentGrid; //the actual grid
+    GridType* m_NextGrid; //future grid
 
     void Next() {
         for(size_t y = 0; y < HEIGHT_Y; y++) {
