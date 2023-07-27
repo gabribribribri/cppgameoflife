@@ -1,6 +1,7 @@
-#include "grid.hpp"
+#include "sdlhandler.hpp"
 
 int main() {
     GameOfLife game;
-    game.GameLoop();
+    SDL_GameOfLifeHandler handler(game);
+    handler.PrimitiveGameLoop();
 }
