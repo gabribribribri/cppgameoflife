@@ -1,17 +1,11 @@
+#pragma once
 #include <array>
-#include <cstddef>
-#include <stdexcept>
 #include <thread>
 #include <iostream>
 using namespace std::chrono_literals;
 
 
 class GameOfLife {
-    /*
-        allocation size:
-            HEIGHT_Y * WIDTH_Y * 2 (bytes)
-        for h=30 and w=100 alloc size is 6ko (damn that's huge)
-    */
 
 public:
     //some boring constant shit
