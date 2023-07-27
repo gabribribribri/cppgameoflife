@@ -3,17 +3,13 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include "parameters.hpp"
 using namespace std::chrono_literals;
 
 
 class GameOfLife {
 
 public:
-    //some boring constant shit
-    static constexpr size_t HEIGHT_Y                      = 30;
-    static constexpr size_t WIDTH_X                       = 100;
-    static constexpr int    POURCENT                      = 30;
-    static constexpr int INTERVALLE                       = 100;
     using GridType = std::array<std::array<bool, WIDTH_X>, HEIGHT_Y>;
 
     GameOfLife() {
@@ -23,7 +19,7 @@ public:
         srand(time(nullptr));
         for (size_t y = 0; y < HEIGHT_Y; y++)
             for (size_t x = 0; x < WIDTH_X; x++) 
-                (*m_CurrentGrid)[y][x] = ((rand()%100) < POURCENT);
+                (*m_CurrentGrid)[y][x] = ((rand()%100) < POURCENT_PIXEL_START);
         
     }
 
@@ -35,19 +31,6 @@ public:
     void GameIteration() {
         Next();
         SwitchGridsPtr();
-    }
-
-    void GameIterationAndPrint() {
-        PrintGrid();
-        Next();
-        SwitchGridsPtr();
-    }
-
-    void GameLoop() {
-        for(;;) {
-            GameIterationAndPrint();
-            std::this_thread::sleep_for(std::chrono::milliseconds(INTERVALLE));
-        }        
     }
 
     std::array<bool, WIDTH_X>& operator[](size_t index) {
@@ -93,23 +76,5 @@ private:
         GridType* temp = m_CurrentGrid;
         m_CurrentGrid = m_NextGrid;
         m_NextGrid = temp;
-    }
-
-    void PrintGrid() {
-        system("clear");
-        for (auto& line : *m_CurrentGrid) {
-            for(bool cell : line)
-                std::cout << (cell ? "#" : " ");
-            std::cout << "\n";
-        }
-    }
-
-    void PrintVoisins() {
-        system("clear");
-        for (size_t y = 0; y < HEIGHT_Y; y++) {
-            for (size_t x = 0; x < WIDTH_X; x++)
-                std::cout << (int)CountVoisins(x, y);
-            std::cout << "\n";
-        }
     }
 };
