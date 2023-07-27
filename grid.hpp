@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <chrono>
 #include <thread>
 #include <iostream>
 using namespace std::chrono_literals;
@@ -12,7 +13,7 @@ public:
     static constexpr size_t HEIGHT_Y                      = 30;
     static constexpr size_t WIDTH_X                       = 100;
     static constexpr int    POURCENT                      = 30;
-    static constexpr std::chrono::milliseconds INTERVALLE = 1100ms;
+    static constexpr int INTERVALLE                       = 100;
     using GridType = std::array<std::array<bool, WIDTH_X>, HEIGHT_Y>;
 
     GameOfLife() {
@@ -32,14 +33,21 @@ public:
     }
 
     void GameIteration() {
+        Next();
+        SwitchGridsPtr();
+    }
+
+    void GameIterationAndPrint() {
         PrintGrid();
         Next();
         SwitchGridsPtr();
-        std::this_thread::sleep_for(INTERVALLE);
     }
 
     void GameLoop() {
-        for(;;) GameIteration();             
+        for(;;) {
+            GameIterationAndPrint();
+            std::this_thread::sleep_for(std::chrono::milliseconds(INTERVALLE));
+        }        
     }
 
     std::array<bool, WIDTH_X>& operator[](size_t index) {
