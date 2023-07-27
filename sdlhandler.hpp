@@ -1,6 +1,10 @@
 #pragma once
 #include "grid.hpp"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_video.h>
 #include "parameters.hpp"
 
@@ -8,7 +12,6 @@
 class SDL_GameOfLifeHandler {
 
 private:
-
 
     SDL_Window*   m_Window;
     SDL_Renderer* m_Renderer;
@@ -44,22 +47,44 @@ private:
 
 public:
 
-    void EventHandlingGameLoop() {
+    void GameLoop() {
         SDL_Event events;
-        bool running = true;
-        uint framesSinceUpdate = 0;
+        bool      running           = true;
+        bool      isPaused          = false;
+        uint      framesSinceUpdate = 0;
+        uint      updateRate        = UPDATE_RATE;
+
+
         while (running) {
             while (SDL_PollEvent(&events)) {
                 switch (events.type) {
                     case SDL_QUIT:
                         running = false;
                         break;
+
+                    case SDL_KEYDOWN:
+                        if (events.key.keysym.sym == SDLK_SPACE)
+                            isPaused = !isPaused;
+                        if (events.key.keysym.sym == SDLK_c)
+                            updateRate -= 5;
+                        if (events.key.keysym.sym == SDLK_v)
+                            updateRate += 5;
+                        break;
+                    
+                    case SDL_MOUSEBUTTONDOWN:
+                        if(events.button.button == SDL_BUTTON_LEFT) {
+                            bool& cell = m_Game[events.motion.y/15][events.motion.x/15];
+                            cell = !cell;
+                        }
+                        break;
                 }
             }
-            if (framesSinceUpdate >= UPDATE_RATE) {
-                m_Game.GameIteration();
+
+            if (framesSinceUpdate >= updateRate) {
+                if (!isPaused) m_Game.GameIteration();
                 framesSinceUpdate = 0;
             }
+
             GameRender();
             framesSinceUpdate++;
             SDL_Delay(static_cast<uint>(1.0/FRAME_RATE*1000+0.5));
