@@ -1,11 +1,6 @@
 #pragma once
 #include "grid.hpp"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_mouse.h>
-#include <SDL2/SDL_scancode.h>
-#include <SDL2/SDL_video.h>
 #include "parameters.hpp"
 
 
@@ -73,7 +68,7 @@ public:
                     
                     case SDL_MOUSEBUTTONDOWN:
                         if(events.button.button == SDL_BUTTON_LEFT) {
-                            bool& cell = m_Game[events.motion.y/15][events.motion.x/15];
+                            bool& cell = m_Game[events.motion.y/PIXEL_SIZE][events.motion.x/PIXEL_SIZE];
                             cell = !cell;
                         }
                         break;
