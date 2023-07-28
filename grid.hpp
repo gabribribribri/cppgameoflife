@@ -34,8 +34,8 @@ public:
     }
 
     std::array<bool, WIDTH_X>& operator[](size_t index) {
-        if (index > WIDTH_X or index < 0)
-            throw std::length_error("index > WIDTH_X");
+        if (index > HEIGHT_Y or index < 0)
+            throw std::length_error("index > HEIGHT_Y");
         else
             return m_CurrentGrid->at(index);
     } 
